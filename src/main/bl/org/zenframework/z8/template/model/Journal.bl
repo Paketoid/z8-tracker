@@ -1,0 +1,39 @@
+import org.zenframework.z8.base.table.Table;
+import org.zenframework.z8.base.table.system.Users;
+import org.zenframework.z8.base.table.value.DateField;
+import org.zenframework.z8.base.table.value.Field;
+import org.zenframework.z8.base.table.value.Link;
+import org.zenframework.z8.base.table.value.StringField;
+
+[generatable]
+[name "Journal"]
+[displayName "История задач"]
+public class Journal extends Table{
+	
+	
+	public Task task;
+	[name "Task"] public Link taskId = task;
+	
+	public Users editor;
+	[name "Editor"] public Link editorId = editor;
+	
+	public DateField editedAt;
+	editedAt.defaultValue = date.now();
+
+	[name "Edited field"]
+	[displayName "Поле"]
+	public StringField editedFieldName;
+	
+	[name "New value"]
+	[displayName "Новое значение"]
+	public StringField newValue;
+	
+	public void takeTask(guid recordId){
+		if (!readRecord(recordId, Field[] {this.taskId}))
+			throw "Задача '" + recordId + "'не существует";
+		guid taskId = this.taskId.get();
+//		if (readFirst(Field[] {task.name}, this.taskId == taskId && this.status == NotStarted && this.recordId != recordId))
+//			throw "Задача '" + task.name.get() + "' уже взята";
+			update(recordId);
+	}
+}

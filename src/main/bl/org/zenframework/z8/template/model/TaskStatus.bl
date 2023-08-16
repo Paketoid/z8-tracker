@@ -1,0 +1,18 @@
+import org.zenframework.z8.base.table.Table;
+
+[generatable]
+[name "Task status"]
+[displayName "Статус задачи"]
+public class TaskStatus extends Table{
+	
+	records {
+		[name "Новая"]
+		NotStarted = '2D80338A-B281-451E-9035-85760454B663';
+		
+		[name "В процессе"]
+		InProgress = '73190B84-16C4-42FC-8AD2-6733EA126121';
+		
+		[name "Завершено"]
+		Done = '69F05786-AF18-46C8-962C-C4034771FA60';
+	}
+}

@@ -1,0 +1,82 @@
+import org.zenframework.z8.base.form.Listbox;
+import org.zenframework.z8.base.table.Table;
+import org.zenframework.z8.base.table.system.Users;
+import org.zenframework.z8.base.table.value.Aggregation;
+import org.zenframework.z8.base.table.value.DateField;
+import org.zenframework.z8.base.table.value.IntExpression;
+import org.zenframework.z8.base.table.value.Join;
+import org.zenframework.z8.base.table.value.JoinType;
+import org.zenframework.z8.base.table.value.Link;
+import org.zenframework.z8.base.table.value.StringExpression;
+import org.zenframework.z8.base.table.value.TextField;
+
+[generatable]
+[name "Task"]
+[displayName "Задачи"]
+public class Task extends Table {
+	name.length = 100;
+	
+	[name "Created"]
+	[displayName "Создано"]
+	public DateField created;
+	created.defaultValue = date.now();
+	
+	[name "Finished"]
+	[displayName "Завершено"]
+	public DateField finished;
+	
+	[name "Deadline"]
+	[displayName "Завершить до"]
+	public DateField deadline;
+	deadline.defaultValue = date.now().addDay(14);
+	
+	public static final int NotStarted = 0;
+	public static final int InProgress = 1;
+	public static final int FinishedOnTime = 2;
+	public static final int FinishedLate = 3;
+	
+	public IntExpression status = (responsibleId.sqlIsNull()).IIF(NotStarted, (finished == date.Min).IIF(InProgress, (finished > deadline).IIF(FinishedLate, FinishedOnTime)));
+	[displayName "Статус"] public StringExpression statusStr = (status == NotStarted).IIF("Новая", (status == InProgress).IIF("В работе", (status == FinishedOnTime).IIF("Завершено вовремя", "Завершено с опозданием")));
+	
+	
+	//public Link taskId = this;
+	
+	public Workers creator;
+	public Join creatorJoin = class {
+		joinType = JoinType.Left;
+		virtual protected sql_bool expression(){
+			return (container.creator.recordId == (sql_guid) container.createdBy);	
+		}
+	};
+	creatorJoin = creator;
+	
+	creator.tasksCreated = 1;
+	creator.tasksCreated.aggregation = Aggregation.Sum; 
+	
+	//[displayName "Создатель"] creator.name;
+	
+	public Users responsible;
+	[name "responsible"] public Link responsibleId = responsible;
+	
+	[displayName "Описание задачи"] public TextField contents;
+	
+	//public TaskStatus status;
+	//[name "Status"] public Link statusId = status;
+	
+	public Project project;
+	[name "Project"] public Link projectId = project;
+	
+	public Journal journal;
+	public Listbox journalList;
+	journalList.query = journal;
+	journalList.link = journal.taskId;
+	
+	/*virtual public void finishTask(guid recordId){
+		finished = date.now();
+		update(recordId);
+	}
+	
+	virtual public void afterCreate(guid recordId){
+		creator = users.readRecord(recordId, Field[] {createdBy});
+	}*/
+} 

@@ -1,0 +1,22 @@
+import org.zenframework.z8.base.table.Table;
+import org.zenframework.z8.base.table.value.Link;
+import org.zenframework.z8.base.table.value.TextField;
+
+[generatable]
+[name "Project"]
+public class Project extends Table{
+	
+	[name "ProjectDescription"]
+	[displayName "Описание"] public TextField contents;
+	contents.colSpan = 2;
+	contents.flex = 2;
+	
+	public Task task;
+	[name "Task"] public Link taskId = task;
+	
+	[displayName "Ответственный"] task.responsible.name;
+	[displayName "Задача"] task.name;
+	
+	task.name.editable = true;
+	task.responsible.name.editable = true;
+}

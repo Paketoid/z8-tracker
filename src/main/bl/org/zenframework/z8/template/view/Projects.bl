@@ -1,0 +1,32 @@
+import org.zenframework.z8.base.form.Listbox;
+import org.zenframework.z8.template.model.Project;
+
+[entry]
+[request true]
+[displayName "Проекты"]
+public class Projects extends Project{
+	[displayName "Проект"] name;
+	
+	/*
+	[displayName "Завершить"]
+	public Action finishTask = class{
+		virtual protected void execute(guid recordId, Query context, guid[] selected, Query query){
+			for (guid taskId : selected)
+				container.task.finishTask(taskId);
+		}
+	};
+	*/
+	
+	[displayName "Задачи"]
+	public Listbox taskList;
+	taskList.query = task;
+	taskList.link = task.projectId;
+	taskList.columns = {task.name, task.responsible.name, task.statusStr};
+	//taskList.actions = {finishTask};
+	taskList.colSpan = 2;
+	taskList.flex = 3;
+	
+	names = {name};
+	controls = {contents, taskList};
+	columns = {name, contents};
+}

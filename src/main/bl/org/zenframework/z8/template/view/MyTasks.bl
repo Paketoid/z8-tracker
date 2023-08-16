@@ -1,0 +1,10 @@
+[entry]
+[request true]
+[displayName "Мои задачи"]
+public class MyTasks extends AllTasks {
+	virtual protected void beforeRead() {
+		super.beforeRead();
+		addWhere(responsibleId == user().id || createdBy == user().id);
+	}
+
+}

@@ -1,0 +1,8 @@
+import org.zenframework.z8.base.table.system.Users;
+import org.zenframework.z8.base.table.value.IntExpression;
+
+[generatable]
+[name "Workers"]
+public class Workers extends Users{
+	public IntExpression tasksCreated = 0;
+}
