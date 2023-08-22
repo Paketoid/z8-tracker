@@ -1,3 +1,4 @@
+import org.zenframework.z8.base.form.Fieldset;
 import org.zenframework.z8.base.form.Listbox;
 import org.zenframework.z8.base.table.Table;
 import org.zenframework.z8.base.table.system.Users;
@@ -71,11 +72,19 @@ public class Task extends Table {
 	journalList.query = journal;
 	journalList.link = journal.taskId;
 	
-	/*virtual public void finishTask(guid recordId){
+	[displayName "Основная информация"]
+	public Fieldset mainInfo;
+	mainInfo.controls = {name, creator.name, responsible.name, project.name, statusStr, created, finished, deadline};
+	mainInfo.colCount = 2;
+	mainInfo.colSpan = 2;
+	mainInfo.flex = 1;
+	
+	virtual public void finishTask(guid recordId){
 		finished = date.now();
 		update(recordId);
 	}
 	
+	/*
 	virtual public void afterCreate(guid recordId){
 		creator = users.readRecord(recordId, Field[] {createdBy});
 	}*/

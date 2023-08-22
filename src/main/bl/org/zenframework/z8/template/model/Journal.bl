@@ -10,7 +10,6 @@ import org.zenframework.z8.base.table.value.StringField;
 [displayName "История задач"]
 public class Journal extends Table{
 	
-	
 	public Task task;
 	[name "Task"] public Link taskId = task;
 	
@@ -32,8 +31,13 @@ public class Journal extends Table{
 		if (!readRecord(recordId, Field[] {this.taskId}))
 			throw "Задача '" + recordId + "'не существует";
 		guid taskId = this.taskId.get();
+		editor.read(Field[] {editor.name}, ((sql_string) editor.name.get() == user().login));
+		while (editor.next()){
+			if (editor.name.get() == user().login)
+				task.responsible = editor;
+		}
 //		if (readFirst(Field[] {task.name}, this.taskId == taskId && this.status == NotStarted && this.recordId != recordId))
 //			throw "Задача '" + task.name.get() + "' уже взята";
-			update(recordId);
+		update(recordId);
 	}
 }
