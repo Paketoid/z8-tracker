@@ -33,6 +33,6 @@ public class Projects extends Project{
 //	name, creator.name, responsible.name, project.name, statusStr, created, finished, deadline
 	
 	names = {name};
-	controls = {taskList, task.mainInfo};
+	controls = {taskList};
 	columns = {name, contents};
 }

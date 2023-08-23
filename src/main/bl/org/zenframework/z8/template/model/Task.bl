@@ -4,6 +4,7 @@ import org.zenframework.z8.base.table.Table;
 import org.zenframework.z8.base.table.system.Users;
 import org.zenframework.z8.base.table.value.Aggregation;
 import org.zenframework.z8.base.table.value.DateField;
+import org.zenframework.z8.base.table.value.Field;
 import org.zenframework.z8.base.table.value.IntExpression;
 import org.zenframework.z8.base.table.value.Join;
 import org.zenframework.z8.base.table.value.JoinType;
@@ -36,7 +37,7 @@ public class Task extends Table {
 	public static final int FinishedOnTime = 2;
 	public static final int FinishedLate = 3;
 	
-	public IntExpression status = (responsibleId.sqlIsNull()).IIF(NotStarted, (finished == date.Min).IIF(InProgress, (finished > deadline).IIF(FinishedLate, FinishedOnTime)));
+	public IntExpression status = (responsibleId == guid.Null).IIF(NotStarted, (finished == date.Min).IIF(InProgress, (finished > deadline).IIF(FinishedLate, FinishedOnTime)));
 	[displayName "Статус"] public StringExpression statusStr = (status == NotStarted).IIF("Новая", (status == InProgress).IIF("В работе", (status == FinishedOnTime).IIF("Завершено вовремя", "Завершено с опозданием")));
 	
 	
@@ -72,18 +73,19 @@ public class Task extends Table {
 	journalList.query = journal;
 	journalList.link = journal.taskId;
 	
-	[displayName "Основная информация"]
-	public Fieldset mainInfo;
-	mainInfo.controls = {name, creator.name, responsible.name, project.name, statusStr, created, finished, deadline};
-	mainInfo.colCount = 2;
-	mainInfo.colSpan = 2;
-	mainInfo.flex = 1;
-	
 	virtual public void finishTask(guid recordId){
 		finished = date.now();
 		update(recordId);
 	}
 	
+	public void takeTask(guid recordId){
+		if (!responsible.readFirst(Field[] { responsible.name }, responsible.name == user().login))
+			throw "Доступ запрещен";
+		this.responsibleId = responsible.recordId();
+		this.update(recordId);
+//		if (readFirst(Field[] {task.name}, this.taskId == taskId && this.status == NotStarted && this.recordId != recordId))
+//			throw "Задача '" + task.name.get() + "' уже взята";
+	}
 	/*
 	virtual public void afterCreate(guid recordId){
 		creator = users.readRecord(recordId, Field[] {createdBy});

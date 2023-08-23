@@ -1,3 +1,4 @@
+import org.zenframework.z8.base.form.Fieldset;
 import org.zenframework.z8.base.form.action.Action;
 import org.zenframework.z8.base.query.Query;
 import org.zenframework.z8.template.model.Task;
@@ -21,24 +22,31 @@ public class AllTasks extends Task{
 	[displayName "Взять задачу"]
 	public Action takeTask = class{
 		virtual protected void execute(guid recordId, Query context, guid[] selected, Query query){
-			for (guid taskId : selected)
-				container.journal.takeTask(taskId);
+			container.takeTask(recordId);
 		}
 	};
 	
+	//context --- корневой класс (в данном случае --- AllTasks), recordId --- id текущей записи в контексте (в данном случае --- задачи)
 	[displayName "Завершить задачу"]
 	public Action finishTask = class{
 		virtual protected void execute(guid recordId, Query context, guid[] selected, Query query){
-			for (guid taskId : selected)
-				container.finishTask(taskId);
+			container.finishTask(recordId);
 		}
 	};
 	
+	[displayName "Основная информация"]
+	public Fieldset mainInfo;
+	mainInfo.controls = {name, creator.name, responsible.name, project.name, statusStr, created, finished, deadline, takeTask, finishTask};
+	mainInfo.colCount = 2;
+	mainInfo.colSpan = 2;
+	mainInfo.flex = 1;
+	
 	[displayName "История изменения"] journalList;
 	journalList.columns = {journal.editor.name};//{journal.editedAt, journal.editor.name, journal.editedFieldName, journal.newValue};
-	journalList.actions = {takeTask, finishTask};
+	//Action можно запихнуть в controls
+	//journalList.actions = {takeTask, finishTask};
 	journalList.colSpan = 4;
-	journalList.flex = 2;	
+	journalList.flex = 2;
 	
 	names = {name};
 	controls = {mainInfo, contents, journalList};

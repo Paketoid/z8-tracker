@@ -1,7 +1,6 @@
 import org.zenframework.z8.base.table.Table;
 import org.zenframework.z8.base.table.system.Users;
 import org.zenframework.z8.base.table.value.DateField;
-import org.zenframework.z8.base.table.value.Field;
 import org.zenframework.z8.base.table.value.Link;
 import org.zenframework.z8.base.table.value.StringField;
 
@@ -26,18 +25,4 @@ public class Journal extends Table{
 	[name "New value"]
 	[displayName "Новое значение"]
 	public StringField newValue;
-	
-	public void takeTask(guid recordId){
-		if (!readRecord(recordId, Field[] {this.taskId}))
-			throw "Задача '" + recordId + "'не существует";
-		guid taskId = this.taskId.get();
-		editor.read(Field[] {editor.name}, ((sql_string) editor.name.get() == user().login));
-		while (editor.next()){
-			if (editor.name.get() == user().login)
-				task.responsible = editor;
-		}
-//		if (readFirst(Field[] {task.name}, this.taskId == taskId && this.status == NotStarted && this.recordId != recordId))
-//			throw "Задача '" + task.name.get() + "' уже взята";
-		update(recordId);
-	}
 }
