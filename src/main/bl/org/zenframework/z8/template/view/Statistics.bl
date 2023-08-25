@@ -1,26 +1,15 @@
-import org.zenframework.z8.base.table.system.Users;
 import org.zenframework.z8.base.table.value.Aggregation;
+import org.zenframework.z8.base.table.value.CountExpression;
 import org.zenframework.z8.base.table.value.IntExpression;
-import org.zenframework.z8.base.table.value.Join;
-import org.zenframework.z8.base.table.value.JoinType;
+import org.zenframework.z8.template.model.Journal;
 import org.zenframework.z8.template.model.Task;
 
 [entry]
 [request true]
 [displayName "Статистика"]
 [presentation "table"]
-public class Statistics extends Task{
+public class Statistics extends Journal{
 	//[displayName "Пользователь"] name;
-	
-	/*public Users users;
-	
-	public Join usersJoin = class {
-		joinType = JoinType.Left;
-		virtual protected sql_bool expression(){
-			return (container.users.recordId == (sql_guid) container.responsibleId);	
-		}
-	};
-	usersJoin = users;
 	
 	/*
 	public Users creators;
@@ -33,20 +22,19 @@ public class Statistics extends Task{
 	creatorsJoin = creators;*/
 	
 	[displayName "Получено задач"]
-	public IntExpression tasksRecieved = 1;
+	public IntExpression tasksRecieved = (task.status == Task.InProgress).IIF(1, 0);
 	tasksRecieved.aggregation = Aggregation.Sum;
 	
 	[displayName "Выполнено вовремя"]
-	public IntExpression tasksFinishedOnTime = (status == FinishedOnTime).IIF(1, 0);
+	public IntExpression tasksFinishedOnTime = (task.status == Task.FinishedOnTime).IIF(1, 0);
 	tasksFinishedOnTime.aggregation = Aggregation.Sum;
 	
 	[displayName "Выполнено с опозданием"]
-	public IntExpression tasksFinishedLate = (status == FinishedLate).IIF(1, 0);
+	public IntExpression tasksFinishedLate = (task.status == Task.FinishedLate).IIF(1, 0);
 	tasksFinishedLate.aggregation = Aggregation.Sum;
 	
-	[displayName "Создано задач"] creator.tasksCreated;
+	[displayName "Создано задач"] public CountExpression tasksCreated;
 	
-	//names = {name};
-	columns = {responsible.name, tasksRecieved, tasksFinishedOnTime, tasksFinishedLate, creator.tasksCreated};
-	groupBy = {responsibleId};*/
+	columns = {editor.name, tasksRecieved, tasksFinishedOnTime, tasksFinishedLate, tasksCreated};
+	groupBy = {editor.name};
 }

@@ -78,6 +78,12 @@ public class Task extends Table {
 	
 	virtual public void finishTask(guid recordId){
 		finished = date.now();
+		
+		this.journal.taskId = this.recordId();
+		this.journal.editorId = responsible.recordId();
+		this.journal.editedFieldName = "Завершено";
+		this.journal.newValue = responsible.name;
+		this.journal.create();
 		update(recordId);
 	}
 	
@@ -85,13 +91,13 @@ public class Task extends Table {
 		if (!responsible.readFirst(Field[] { responsible.name }, responsible.name == user().login))
 			throw "Доступ запрещен";
 		this.responsibleId = responsible.recordId();
-		this.update(recordId);
 		
-		journal.taskId = this.recordId();
-		journal.editorId = responsible.recordId();
-		journal.editedFieldName = "Ответственный";
-		journal.newValue = responsible.name;
-		journal.create();
+		this.journal.taskId = this.recordId();
+		this.journal.editorId = responsible.recordId();
+		this.journal.editedFieldName = "Ответственный";
+		this.journal.newValue = responsible.name;
+		this.journal.create();
+		this.update(recordId);
 //		if (readFirst(Field[] {task.name}, this.taskId == taskId && this.status == NotStarted && this.recordId != recordId))
 //			throw "Задача '" + task.name.get() + "' уже взята";
 	}

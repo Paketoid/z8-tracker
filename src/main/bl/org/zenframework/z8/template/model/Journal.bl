@@ -26,4 +26,6 @@ public class Journal extends Table{
 	[name "New value"]
 	[displayName "Новое значение"]
 	public StringField newValue;
+	
+	public int newStatus;
 }
