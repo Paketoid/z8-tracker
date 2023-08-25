@@ -1,8 +1,6 @@
-import org.zenframework.z8.base.form.Fieldset;
 import org.zenframework.z8.base.form.Listbox;
 import org.zenframework.z8.base.table.Table;
 import org.zenframework.z8.base.table.system.Users;
-import org.zenframework.z8.base.table.value.Aggregation;
 import org.zenframework.z8.base.table.value.DateField;
 import org.zenframework.z8.base.table.value.Field;
 import org.zenframework.z8.base.table.value.IntExpression;
@@ -32,18 +30,26 @@ public class Task extends Table {
 	public DateField deadline;
 	deadline.defaultValue = date.now().addDay(14);
 	
+	/*
+	public TaskStatus statuses;
+	public Link statusesId = statuses;
+	*/
+	
 	public static final int NotStarted = 0;
 	public static final int InProgress = 1;
 	public static final int FinishedOnTime = 2;
 	public static final int FinishedLate = 3;
 	
+	
+	//public sql_guid status = (responsibleId == guid.Null).IIF(statuses.NotStarted, (finished == date.Min).IIF(statuses.InProgress, (finished > deadline).IIF(statuses.FinishedLate, statuses.FinishedOnTime)));
 	public IntExpression status = (responsibleId == guid.Null).IIF(NotStarted, (finished == date.Min).IIF(InProgress, (finished > deadline).IIF(FinishedLate, FinishedOnTime)));
+	//[displayName "Статус"] public StringExpression statusStr = statuses.readFirst(Field[] {}).name;
 	[displayName "Статус"] public StringExpression statusStr = (status == NotStarted).IIF("Новая", (status == InProgress).IIF("В работе", (status == FinishedOnTime).IIF("Завершено вовремя", "Завершено с опозданием")));
 	
 	
 	//public Link taskId = this;
 	
-	public Workers creator;
+	public Users creator;
 	public Join creatorJoin = class {
 		joinType = JoinType.Left;
 		virtual protected sql_bool expression(){
@@ -51,10 +57,7 @@ public class Task extends Table {
 		}
 	};
 	creatorJoin = creator;
-	
-	creator.tasksCreated = 1;
-	creator.tasksCreated.aggregation = Aggregation.Sum; 
-	
+
 	//[displayName "Создатель"] creator.name;
 	
 	public Users responsible;
@@ -83,6 +86,12 @@ public class Task extends Table {
 			throw "Доступ запрещен";
 		this.responsibleId = responsible.recordId();
 		this.update(recordId);
+		
+		journal.taskId = this.recordId();
+		journal.editorId = responsible.recordId();
+		journal.editedFieldName = "Ответственный";
+		journal.newValue = responsible.name;
+		journal.create();
 //		if (readFirst(Field[] {task.name}, this.taskId == taskId && this.status == NotStarted && this.recordId != recordId))
 //			throw "Задача '" + task.name.get() + "' уже взята";
 	}

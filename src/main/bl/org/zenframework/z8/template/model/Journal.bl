@@ -4,6 +4,7 @@ import org.zenframework.z8.base.table.value.DateField;
 import org.zenframework.z8.base.table.value.Link;
 import org.zenframework.z8.base.table.value.StringField;
 
+[entry]
 [generatable]
 [name "Journal"]
 [displayName "История задач"]
