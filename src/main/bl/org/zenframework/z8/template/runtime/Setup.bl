@@ -9,11 +9,6 @@ import org.zenframework.z8.base.table.system.UserEntries;
 import org.zenframework.z8.base.table.system.UserRoles;
 import org.zenframework.z8.base.table.value.Field;
 import org.zenframework.z8.lang.Object;
-import org.zenframework.z8.template.model.Document;
-import org.zenframework.z8.template.model.History;
-import org.zenframework.z8.template.model.Status;
-import org.zenframework.z8.template.view.Documents;
-import org.zenframework.z8.template.view.MyDocuments;
 
 /* Класс-помощник для настройки приложения */
 public class Setup {
@@ -36,57 +31,35 @@ public class Setup {
 	/* Системная таблица Z8, хранящая пункты меню приложения */
 	private Entries entries;
 
-	/* Таблица приложения для хранения документов */
-	private Document document;
-
-	/* Таблица приложения для хранения статусов документов */
-	private Status status;
-
-	/* Таблица приложения для хранения истории изменения документов */
-	private History history;
-
-	/* Представление данных для просмотра и редактирования всех документов */
-	private Documents documents;
-
-	/* Представление данных для просмотра и редактирования документов */
-	private MyDocuments myDocuments;
-
 	/* Массив приватных таблиц */
 	public final Table[] privateTables = {};
 
 	/* Массив публичных таблиц */
 	public final Table[] publicTables = {
-		document
 	};
 
 	/* Массив таблиц только для чтения */
 	public final Table[] readOnlyTables = {
-		status
 	};
 
 	/* Массив таблиц, из которых запрещено удалять записи */
 	public final Table[] noDestoryTables = {
-		history
 	};
 
 	/* Массив приватных запросов, доступных только администратору */
 	public final Object[] privateRequests = {
-		documents
 	};
 
 	/* Массив публичных запросов */
 	public final Object[] publicRequests = {
-		myDocuments
 	};
 
 	/* Массив приватных пунктов меню, доступных только администратору */
 	public final int[Object] privateEntries = {
-		(documents, 1)
 	};
 
 	/* Массив публичных пунктов меню */
 	public final int[Object] publicEntries = {
-		(myDocuments, 2)
 	};
 
 	/*
